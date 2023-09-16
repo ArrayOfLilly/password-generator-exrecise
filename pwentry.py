@@ -68,13 +68,19 @@ class PwEntry(tkinter.Entry):
         self.configure(foreground=self.placeholder_color)
 
     def set_textvariable(self, param: tkinter.StringVar):
-        '''
+        """
         Set the parent's textvariable attribute
         :param param:
         :return:
-        '''
+        """
         self.textvariable = param
         self.configure(textvariable=self.textvariable)
 
-    def get_original_system_color(self):
-        return self.ORIGINAL_SYSTEM_TEXT_COLOR
+    def on_focus(self):
+
+        # Checks if Entry contains its placeholder text
+        # If yes, delete it and set the system foreground color
+        position = self.index(tkinter.END)
+        self.icursor(position)
+
+

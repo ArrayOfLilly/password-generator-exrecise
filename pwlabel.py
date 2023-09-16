@@ -22,3 +22,5 @@ class PwLabel(tkinter.Label):
         self.configure(font=(FONT_NAME, font_size, ""))
         self.configure(pady=pady)
 
+
+

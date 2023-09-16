@@ -4,8 +4,10 @@ import tkmacosx
 import time
 import pyperclip
 import password
+import pwbutton
 from pwentry import PwEntry
 from pwlabel import PwLabel
+from pwbutton import HoverButton
 
 # Window background constant
 BACKGROUND = '#FEF0F0'
@@ -24,7 +26,8 @@ DARK_BROWN = '#482B2F'
 LIGHT_BROWN = '#B8B5B6'
 # We should declare "White" because Tkmacosx doesn't accepts Tkinter color literals
 WHITE = '#fff'
-PASSWORD_BLUE = '#C4D1F0'
+GENERATED_PASSWORD_TEXT_BLUE = '#59BCE0'
+PASSWORD_BUTTON_OVERLAY = '#ABB5B5'
 
 # UI Element's color
 SAVE_BTN_NORMAL_STATE_BG = LIGHT_BROWN
@@ -36,7 +39,7 @@ SAVE_BTN_DISABLED_STATE_FG = LIGHT_BROWN
 
 ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG = LIGHT_BROWN
 ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG = DARK_BROWN
-ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG = LIGHT_BROWN
+ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG = PASSWORD_BUTTON_OVERLAY
 ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG = WHITE
 
 # Main image per app state
@@ -52,6 +55,7 @@ SUCCESS_IMAGE_PATH_STR = 'img/success.png'
 root = tkinter.Tk()
 root.title("Password Manager")
 root.config(padx=75, pady=25, bg=BACKGROUND)
+root.tk_focusFollowsMouse()
 
 # ---------------------------- CONSTANTS and Global variables that needs the root ---------------------------- #
 
@@ -68,7 +72,7 @@ title_label.grid(row=0, column=0, columnspan=4)
 
 # ---------------------------- Canvas/Image ---------------------------- #
 
-canvas = tkinter.Canvas(width=400, height=230, bg=BACKGROUND, highlightthickness=0)
+canvas = tkinter.Canvas(width=400, height=230, bg=BACKGROUND, highlightthickness=0.2)
 main_img = tkinter.PhotoImage(file=START_IMAGE_PATH_STR)
 canvas.create_image(202, 115, image=main_img)
 canvas.grid(row=1, column=0, columnspan=4)
@@ -102,10 +106,10 @@ url_entry = PwEntry("url")
 # binding on_click() command by button behavior for check is it's default text
 url_entry.bind("<Button-1>", on_click)
 url_entry.grid(row=2, column=1, columnspan=3)
+url_entry.bind("<Key>", on_click)
 
 url_entry.focus()
-
-# TODO Changing foreground color when an element get focus
+url_entry.on_focus()
 
 # ---------------------------- Username Row ---------------------------- #
 
@@ -120,8 +124,12 @@ username_entry = PwEntry("username")
 
 # binding on_click() command by button behavior for check is it's default text
 username_entry.bind("<Button-1>", on_click)
+username_entry.bind("<Key>", on_click)
 
 username_entry.grid(row=3, column=1, columnspan=3)
+
+username_entry.focus()
+username_entry.on_focus()
 
 
 # ---------------------------- Password Row ---------------------------- #
@@ -137,11 +145,16 @@ password_entry = PwEntry("password")
 
 # binding on_click() command by button behavior for check is it's default text
 password_entry.bind("<Button-1>", on_click)
+password_entry.bind("<Key>", on_click)
 
 password_entry.grid(row=4, column=1, columnspan=3)
 
+password_entry.focus()
+password_entry.on_focus()
+
 # Generating password preferred:
 password_entry.configure(state="disabled")
+password_entry.focus()
 
 # All Entry for batch managing, after that creation finished
 ENTRY_WIDGETS = [url_entry, username_entry, password_entry]
@@ -179,6 +192,7 @@ def choose_my_own_password():
     #   Pattern (length, patterns, personal data, etc)
 
     save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
+    # save_button.configure(state="normal")
     inline_warning_message_placeholder_label[
         "text"] += "Be aware that you're an adult, \nthere's no validation! (yet)'\n"
 
@@ -193,11 +207,12 @@ def generate_random_password():
     # with all other warning because we continues the editing
 
     password_entry.configure(state="disabled")
-    password_entry.configure(disabledforeground=PASSWORD_BLUE)
+    password_entry.configure(disabledforeground=GENERATED_PASSWORD_TEXT_BLUE)
     inline_warning_message_placeholder_label["text"] = ""
 
     # Enables saving
-    save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
+    # save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
+    save_button.configure(state="normal")
 
     # Password generation (by @Alex V's Generator)
     random_password = tkinter.StringVar()
@@ -223,11 +238,12 @@ def generate_memorable_password():
     # with all other warning because we continue the editing
 
     password_entry.configure(state="disabled")
-    password_entry.configure(disabledforeground=PASSWORD_BLUE)
+    password_entry.configure(disabledforeground=GENERATED_PASSWORD_TEXT_BLUE)
     inline_warning_message_placeholder_label["text"] = ""
 
     # Enables saving
-    save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
+    # save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
+    save_button.configure(state="normal")
 
     memorable_password = tkinter.StringVar()
     memorable_password.set(password.memorable())
@@ -238,7 +254,7 @@ def generate_memorable_password():
 
 # ---------------------------- Choose My Own Password Button ---------------------------- #
 
-own_password_button = tkmacosx.Button(root, text="Choose \nmy Own",
+own_password_button = pwbutton.HoverButton(root, text="Choose \nmy Own",
                                       command=choose_my_own_password, width=140,
                                       bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
                                       fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
@@ -246,12 +262,13 @@ own_password_button = tkmacosx.Button(root, text="Choose \nmy Own",
                                       activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
                                       borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=15,
                                       pady=4)
-
 own_password_button.grid(row=5, column=1)
+
+own_password_button.focus()
 
 # ---------------------------- Random Password Button ---------------------------- #
 
-random_button = tkmacosx.Button(root, text="Generate \nRandom", command=generate_random_password,
+random_button = pwbutton.HoverButton(root, text="Generate \nRandom", command=generate_random_password,
                                 width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
                                 fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
                                 activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
@@ -259,9 +276,12 @@ random_button = tkmacosx.Button(root, text="Generate \nRandom", command=generate
                                 borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=10, pady=4)
 random_button.grid(row=5, column=2)
 
+random_button.focus()
+
+
 # ---------------------------- Memorable Password Button ---------------------------- #
 
-memorable_button = tkmacosx.Button(root, text="Generate \nMemorable", command=generate_memorable_password,
+memorable_button = pwbutton.HoverButton(root, text="Generate \nMemorable", command=generate_memorable_password,
                                    width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
                                    fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
                                    activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
@@ -270,6 +290,7 @@ memorable_button = tkmacosx.Button(root, text="Generate \nMemorable", command=ge
                                    pady=4)
 memorable_button.grid(row=5, column=3)
 
+memorable_button.focus()
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -354,7 +375,9 @@ def save():
     time.sleep(1.5)
 
     # Reset UI/app
-    save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
+    # save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
+    save_button.configure(state="disabled")
+
     for entry_widget in ENTRY_WIDGETS:
         entry_widget.copy_placeholder_text_to_textvariable()
 
@@ -367,11 +390,22 @@ def save():
 
 # ---------------------------- Save Button -------------------------------- #
 
-save_button = tkmacosx.Button(root, text="Save", command=save, width=365, bg=SAVE_BTN_DISABLED_STATE_BG,
+def on_enter(e):
+    save_button['text'] = "Do you really want to Save right now?"
+
+
+def on_leave(e):
+    save_button['text'] = "Save"
+
+
+save_button = tkmacosx.Button(root, text="Save", command=save, width=365, bg=SAVE_BTN_NORMAL_STATE_BG,
                               fg=SAVE_BTN_NORMAL_STATE_FG, activebackground=SAVE_BTN_ACTIVE_STATE_BG,
                               activeforeground=SAVE_BTN_ACTIVE_STATE_FG, disabledbackground=SAVE_BTN_DISABLED_STATE_BG,
                               disabledforeground=SAVE_BTN_DISABLED_STATE_FG, font=(FONT_NAME, 16, ""), borderless=1,
                               focuscolor='', state="disabled", padx=50, pady=4)
+save_button.bind("<Enter>", on_enter)
+save_button.bind("<Leave>", on_leave)
+
 save_button.grid(row=7, column=2, columnspan=2, )
 
 # ---------------------------- Placeholder label for validation ---------------------------- #
