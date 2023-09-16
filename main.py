@@ -131,6 +131,7 @@ username_entry.grid(row=3, column=1, columnspan=3)
 username_entry.focus()
 username_entry.on_focus()
 
+# TODO Autofill Entry based on saved username or own Contact Card
 
 # ---------------------------- Password Row ---------------------------- #
 
@@ -219,6 +220,7 @@ def generate_random_password():
     random_password.set(password.random_pass())
     password_entry.set_textvariable(random_password)
 
+#  TODO Make it parameterizable in a new window (as settings)
 
 # ---------------------------- Memorable Password Generation ---------------------------- #
 
@@ -249,6 +251,7 @@ def generate_memorable_password():
     memorable_password.set(password.memorable())
     password_entry.set_textvariable(memorable_password)
 
+# TODO Allow set new word length and/or count, (optionally randomize The Favorite)
 
 # ---------------------------- Password Generating Row ---------------------------- #
 

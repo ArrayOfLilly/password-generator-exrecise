@@ -13,7 +13,7 @@ def random_pass():
     amount_of_capitals = random.randint(1, NR_LETTERS // 2)
 
     gen_capitals = [chr(random.randint(ord("A"), ord("Z"))) for _ in range(amount_of_capitals)]
-    gen_lower_case_letters = [chr(random.randint(ord("a"), ord("z"))) for _ in range(num_letters-amount_of_capitals)]
+    gen_lower_case_letters = [chr(random.randint(ord("a"), ord("z"))) for _ in range(NR_LETTERS-amount_of_capitals)]
 
     final = gen_symbols + gen_numbers + gen_capitals + gen_lower_case_letters
 
