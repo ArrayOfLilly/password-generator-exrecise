@@ -1,5 +1,6 @@
 import random
 
+
 def random_pass():
     num_letters = 11
     num_symbols = 2
@@ -27,6 +28,7 @@ def random_pass():
     random.shuffle(final)
     password = "".join(final)
     return password
+
 
 def memorable():
     word_list = open("pass_word.txt").readlines()
