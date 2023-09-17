@@ -380,9 +380,14 @@ def save():
             json.dump(dict_obj, new_file)
 
     with open("save/save.json") as json_file:
-        dict_obj = json.load(json_file)
-
-        dict_obj.update(new_entry)
+        try:
+            dict_obj = json.load(json_file)
+        except json.decoder.JSONDecodeError:
+            #  Happens when the file exists but the root element doesn't
+            dict_obj = {}
+            dict_obj.update(new_entry)
+        else:
+            dict_obj.update(new_entry)
 
     with open("save/save.json", mode='w', encoding='utf-8') as output:
         json.dump(dict_obj, output, indent=4)
