@@ -8,6 +8,8 @@ import pwbutton
 from pwentry import PwEntry
 from pwlabel import PwLabel
 from pwbutton import HoverButton
+import json
+import os.path
 
 # Window background constant
 BACKGROUND = '#FEF0F0'
@@ -26,7 +28,7 @@ DARK_BROWN = '#482B2F'
 LIGHT_BROWN = '#B8B5B6'
 # We should declare "White" because Tkmacosx doesn't accepts Tkinter color literals
 WHITE = '#fff'
-GENERATED_PASSWORD_TEXT_BLUE = '#59BCE0'
+GENERATED_PASSWORD_TEXT_BLUE = '#B8B5B6'
 PASSWORD_BUTTON_OVERLAY = '#ABB5B5'
 
 # UI Element's color
@@ -361,13 +363,29 @@ def save():
     messagebox.showwarning(title="", message="Sure?",
                            icon="question")
 
-    # TODO Proper JSON format
     # Effective saving
-    new_entry = ('{\n"URL": ' + url_entry.get() + ',\n"username": ' + username_entry.get() + ',\n"password": ' +
-                 password_entry.get() + '\n},\n')
+    new_entry = {
+        url_entry.get(): {
+            "user": username_entry.get(),
+            "password": password_entry.get()
+        }
+    }
 
-    with open("save/save.txt", 'a') as save_file:
-        save_file.write(new_entry)
+    dict_obj = {}
+    path = 'save/save.json'
+
+    if not os.path.exists(path):
+        # If file doesn't exist, we create
+        with open('save/save.json', mode='w', encoding='utf-8') as new_file:
+            json.dump(dict_obj, new_file)
+
+    with open("save/save.json") as json_file:
+        dict_obj = json.load(json_file)
+
+        dict_obj.update(new_entry)
+
+    with open("save/save.json", mode='w', encoding='utf-8') as output:
+        json.dump(dict_obj, output, indent=4)
 
     # Success Status
     inline_warning_message_placeholder_label["text"] = ""
@@ -409,7 +427,7 @@ save_button = tkmacosx.Button(root, text="Save", command=save, width=365, bg=SAV
 save_button.bind("<Enter>", on_enter)
 save_button.bind("<Leave>", on_leave)
 
-save_button.grid(row=7, column=2, columnspan=2, )
+save_button.grid(row=7, column=2, columnspan=2,)
 
 # ---------------------------- Placeholder label for validation ---------------------------- #
 
