@@ -1,4 +1,4 @@
-import tkinter
+import tkinter as tk
 from tkinter import messagebox, StringVar
 import tkmacosx
 import time
@@ -26,7 +26,7 @@ WARNING_COLOR = '#D2546F'
 # UI Colors
 DARK_BROWN = '#482B2F'
 LIGHT_BROWN = '#B8B5B6'
-# We should declare "White" because Tkmacosx doesn't accepts Tkinter color literals
+# We should declare "White" because Tkmacosx doesn't accepts tk color literals
 WHITE = '#fff'
 GENERATED_PASSWORD_TEXT_BLUE = '#B8B5B6'
 PASSWORD_BUTTON_OVERLAY = '#ABB5B5'
@@ -54,14 +54,14 @@ SUCCESS_IMAGE_PATH_STR = 'img/success.png'
 
 # ---------------------------- Window ---------------------------- #
 
-root = tkinter.Tk()
+root = tk.Tk()
 root.title("Password Manager")
 root.config(padx=75, pady=25, bg=BACKGROUND)
 root.tk_focusFollowsMouse()
 
 # ---------------------------- CONSTANTS and Global variables that needs the root ---------------------------- #
 
-main_image = tkinter.PhotoImage()
+main_image = tk.PhotoImage()
 
 
 # ---------------------------- UI SETUP continues ------------------------------- #
@@ -74,14 +74,14 @@ title_label.grid(row=0, column=0, columnspan=4)
 
 # ---------------------------- Canvas/Image ---------------------------- #
 
-canvas = tkinter.Canvas(width=400, height=230, bg=BACKGROUND, highlightthickness=0.2)
-main_img = tkinter.PhotoImage(file=START_IMAGE_PATH_STR)
+canvas = tk.Canvas(width=400, height=230, bg=BACKGROUND, highlightthickness=0.2)
+main_img = tk.PhotoImage(file=START_IMAGE_PATH_STR)
 canvas.create_image(202, 115, image=main_img)
 canvas.grid(row=1, column=0, columnspan=4)
 
 # ---------------------------- Website Row + common Entry commands before first Entry ---------------------------- #
 
-url_label = tkinter.Label(text="Website:", bg=BACKGROUND, font=(FONT_NAME, 16, ""), pady=20)
+url_label = tk.Label(text="Website:", bg=BACKGROUND, font=(FONT_NAME, 16, ""), pady=20)
 
 # Sampling for know system theme and color, before set foreground
 ORIGINAL_SYSTEM_TEXT_COLOR = url_label.cget("foreground")
@@ -97,28 +97,69 @@ def on_click(event):
     # Checks if Entry contains its placeholder text
     # If yes, delete it and set the system foreground color
     if event.widget.is_placeholder():
-        event.widget.delete(0, tkinter.END)
+        event.widget.delete(0, tk.END)
         event.widget.config(fg=ORIGINAL_SYSTEM_TEXT_COLOR)
+
+
+def search_url():
+    url_search_term = url_entry.get()
+
+    path = 'save/save.json'
+    if not os.path.exists(path):
+        url_entry.into_the_entry("You didn't saved anything until now.")
+
+    with open("save/save.json") as json_file:
+        try:
+            dict_obj = json.load(json_file)
+        except json.decoder.JSONDecodeError:
+            # Happens when the file exists but the root element doesn't
+            url_entry.into_the_entry("You didn't saved anything until now.")
+        else:
+            if url_search_term in dict_obj:
+                user = dict_obj[url_search_term]["user"]
+                pword = dict_obj[url_search_term]["password"]
+                messagebox.showwarning(title="{url_search_term}", message=f"{url_search_term}:\n\nUser: {user}\n\n"
+                                                                          f"Password: {pword}", icon="warning")
+            else:
+                messagebox.showwarning(title="Message", message="Sorry, you didn't saved yet",
+                                       icon="warning")
 
 
 # ---------------------------- URL Entry ---------------------------- #
 
 url_entry = PwEntry("url")
+url_entry.configure(width=32)
 
 # binding on_click() command by button behavior for check is it's default text
 url_entry.bind("<Button-1>", on_click)
-url_entry.grid(row=2, column=1, columnspan=3)
+url_entry.grid(row=2, column=1, columnspan=2)
+
+# binding key actions to delete when start typing without clicking in the field
 url_entry.bind("<Key>", on_click)
 
 url_entry.focus()
 url_entry.on_focus()
+
+# ---------------------------- URL Search Button ---------------------------- #
+
+url_search_button = pwbutton.HoverButton(root, text="Search URL",
+                                      command=search_url, width=140,
+                                      bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
+                                      fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
+                                      activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
+                                      activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
+                                      borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=15,
+                                      pady=4)
+url_search_button.grid(row=2, column=3)
+
+url_search_button.focus()
 
 # ---------------------------- Username Row ---------------------------- #
 
 # ---------------------------- Username Label ---------------------------- #
 
 username_label = PwLabel("Email/Username:",16, 20)
-username_label.grid(column=0, row=3)
+username_label.grid(row=3, column=0)
 
 # ---------------------------- Username Entry ---------------------------- #
 
@@ -152,9 +193,6 @@ password_entry.bind("<Key>", on_click)
 
 password_entry.grid(row=4, column=1, columnspan=3)
 
-password_entry.focus()
-password_entry.on_focus()
-
 # Generating password preferred:
 password_entry.configure(state="disabled")
 password_entry.focus()
@@ -170,7 +208,7 @@ ENTRY_WIDGETS = [url_entry, username_entry, password_entry]
 
 def change_main_image(file_path: str):
     global main_img
-    main_img = tkinter.PhotoImage(file=file_path)
+    main_img = tk.PhotoImage(file=file_path)
     canvas.create_image(202, 115, image=main_img)
 
 
@@ -184,7 +222,7 @@ def choose_my_own_password():
     password_entry.config(fg=ORIGINAL_SYSTEM_TEXT_COLOR)
 
     password_entry.focus()
-    password_entry.delete(0, tkinter.END)
+    password_entry.delete(0, tk.END)
 
 
     # Enables saving without generating password and WARNING about the lack of validation
@@ -218,7 +256,7 @@ def generate_random_password():
     save_button.configure(state="normal")
 
     # Password generation (by @Alex V's Generator)
-    random_password = tkinter.StringVar()
+    random_password = tk.StringVar()
     random_password.set(password.random_pass())
     password_entry.set_textvariable(random_password)
 
@@ -249,7 +287,7 @@ def generate_memorable_password():
     # save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
     save_button.configure(state="normal")
 
-    memorable_password = tkinter.StringVar()
+    memorable_password = tk.StringVar()
     memorable_password.set(password.memorable())
     password_entry.set_textvariable(memorable_password)
 
@@ -315,8 +353,8 @@ def if_exit_checkbox_used():
 # ---------------------------- Copy to Clipboard Checkbox ---------------------------- #
 
 is_copy_checkbox_checked = 0  # set default state
-is_copy_checkbox_checked_state = tkinter.IntVar()
-is_copy = tkinter.Checkbutton(text="Copy to the Clipboard", variable=is_copy_checkbox_checked_state,
+is_copy_checkbox_checked_state = tk.IntVar()
+is_copy = tk.Checkbutton(text="Copy to the Clipboard", variable=is_copy_checkbox_checked_state,
                               command=is_copy_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
                               font=(FONT_NAME, 16, ""), pady=20)
 is_copy_checkbox_checked_state.get()
@@ -325,8 +363,8 @@ is_copy.grid(row=6, column=2)
 # ---------------------------- Exit on Save Checkbox ---------------------------- #
 
 is_exit_checkbox_checked = 0
-is_exit_checkbox_checked_state = tkinter.IntVar()
-is_exit = tkinter.Checkbutton(text="Exit on Save", variable=is_exit_checkbox_checked_state,
+is_exit_checkbox_checked_state = tk.IntVar()
+is_exit = tk.Checkbutton(text="Exit on Save", variable=is_exit_checkbox_checked_state,
                               command=if_exit_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
                               font=(FONT_NAME, 16, ""), pady=20)
 is_exit_checkbox_checked_state.get()
@@ -364,12 +402,6 @@ def save():
                            icon="question")
 
     # Effective saving
-    new_entry = {
-        url_entry.get(): {
-            "user": username_entry.get(),
-            "password": password_entry.get()
-        }
-    }
 
     dict_obj = {}
     path = 'save/save.json'
@@ -385,33 +417,56 @@ def save():
         except json.decoder.JSONDecodeError:
             #  Happens when the file exists but the root element doesn't
             dict_obj = {}
-            dict_obj.update(new_entry)
         else:
+            pass
+
+        finally:
+            # If the URL is new
+            if not url_entry.get() in dict_obj:
+                pass
+            # If the URL are already in the file
+            else:
+                msg_box = tk.messagebox.askquestion('Saved URL', 'This URL has already saved, do you '
+                                                                 'want to update it? Otherwise you can can save it on '
+                                                                 'an other name.', icon='warning')
+                # If the user doesn't want to update it, return to editing
+                if msg_box == 'no':
+                    return
+            # If the URL isn't new but the user want to update it or still new
+
+            new_entry = {
+                url_entry.get(): {
+                    "user": username_entry.get(),
+                    "password": password_entry.get()
+                }
+            }
+
             dict_obj.update(new_entry)
 
-    with open("save/save.json", mode='w', encoding='utf-8') as output:
-        json.dump(dict_obj, output, indent=4)
+            with open("save/save.json", mode='w', encoding='utf-8') as output:
+                json.dump(dict_obj, output, indent=4)
 
-    # Success Status
-    inline_warning_message_placeholder_label["text"] = ""
-    change_main_image(SUCCESS_IMAGE_PATH_STR)
+            # Success Status
+            inline_warning_message_placeholder_label["text"] = ""
+            change_main_image(SUCCESS_IMAGE_PATH_STR)
 
-    # TODO would be better operating asynchronous,
-    #  it's just finish for showing again the start screen, doesn't worth 2 sec
-    time.sleep(1.5)
+            # TODO would be better operating asynchronous,
+            #  it's just finish for showing again the start screen, doesn't worth 2 sec
+            time.sleep(1.5)
 
-    # Reset UI/app
-    # save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
-    save_button.configure(state="disabled")
+            # Reset UI/app
+            # save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
+            save_button.configure(state="disabled")
 
-    for entry_widget in ENTRY_WIDGETS:
-        entry_widget.copy_placeholder_text_to_textvariable()
+            for entry_widget in ENTRY_WIDGETS:
+                entry_widget.copy_placeholder_text_to_textvariable()
 
-    change_main_image(START_IMAGE_PATH_STR)
+            change_main_image(START_IMAGE_PATH_STR)
 
-    # Exit
-    if is_exit_checkbox_checked == 1:
-        root.destroy()
+
+            # Exit
+            if is_exit_checkbox_checked == 1:
+                root.destroy()
 
 
 # ---------------------------- Save Button -------------------------------- #

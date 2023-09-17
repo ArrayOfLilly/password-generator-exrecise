@@ -83,4 +83,8 @@ class PwEntry(tkinter.Entry):
         position = self.index(tkinter.END)
         self.icursor(position)
 
+    def into_the_entry(self, param):
+        self.textvariable.set(param)
+        self.configure(textvariable=self.textvariable)
+
 
