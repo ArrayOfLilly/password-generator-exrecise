@@ -49,7 +49,6 @@ START_IMAGE_PATH_STR = 'img/start.png'
 GENERATING_DATA_IMAGE_PATH_STR = 'img/generating_data.png'
 SUCCESS_IMAGE_PATH_STR = 'img/success.png'
 
-
 # ---------------------------- UI SETUP ------------------------------- #
 
 # ---------------------------- Window ---------------------------- #
@@ -63,14 +62,12 @@ root.tk_focusFollowsMouse()
 
 main_image = tk.PhotoImage()
 
-
 # ---------------------------- UI SETUP continues ------------------------------- #
 
 # ---------------------------- Title Label ---------------------------- #
 
 title_label = PwLabel("The Favorite", 32, 25)
 title_label.grid(row=0, column=0, columnspan=4)
-
 
 # ---------------------------- Canvas/Image ---------------------------- #
 
@@ -143,13 +140,13 @@ url_entry.on_focus()
 # ---------------------------- URL Search Button ---------------------------- #
 
 url_search_button = pwbutton.HoverButton(root, text="Search URL",
-                                      command=search_url, width=140,
-                                      bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
-                                      fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
-                                      activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
-                                      activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
-                                      borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=15,
-                                      pady=4)
+                                         command=search_url, width=140,
+                                         bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
+                                         fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
+                                         activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
+                                         activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
+                                         borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=15,
+                                         pady=4)
 url_search_button.grid(row=2, column=3)
 
 url_search_button.focus()
@@ -158,7 +155,7 @@ url_search_button.focus()
 
 # ---------------------------- Username Label ---------------------------- #
 
-username_label = PwLabel("Email/Username:",16, 20)
+username_label = PwLabel("Email/Username:", 16, 20)
 username_label.grid(row=3, column=0)
 
 # ---------------------------- Username Entry ---------------------------- #
@@ -224,7 +221,6 @@ def choose_my_own_password():
     password_entry.focus()
     password_entry.delete(0, tk.END)
 
-
     # Enables saving without generating password and WARNING about the lack of validation
     # TODO Basic Validation:
     #    Duplicated password (easy)
@@ -232,6 +228,7 @@ def choose_my_own_password():
     #       (Get the list first)
     #   Pattern (length, patterns, personal data, etc)
 
+    # noinspection PyArgumentList
     save_button.configure(state="normal", fg=SAVE_BTN_NORMAL_STATE_FG, bg=SAVE_BTN_NORMAL_STATE_BG)
     # save_button.configure(state="normal")
     inline_warning_message_placeholder_label[
@@ -259,6 +256,7 @@ def generate_random_password():
     random_password = tk.StringVar()
     random_password.set(password.random_pass())
     password_entry.set_textvariable(random_password)
+
 
 #  TODO Make it parameterizable in a new window (as settings)
 
@@ -291,6 +289,7 @@ def generate_memorable_password():
     memorable_password.set(password.memorable())
     password_entry.set_textvariable(memorable_password)
 
+
 # TODO Allow set new word length and/or count, (optionally randomize The Favorite)
 
 # ---------------------------- Password Generating Row ---------------------------- #
@@ -298,13 +297,14 @@ def generate_memorable_password():
 # ---------------------------- Choose My Own Password Button ---------------------------- #
 
 own_password_button = pwbutton.HoverButton(root, text="Choose \nmy Own",
-                                      command=choose_my_own_password, width=140,
-                                      bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
-                                      fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
-                                      activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
-                                      activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
-                                      borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=15,
-                                      pady=4)
+                                           command=choose_my_own_password, width=140,
+                                           bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
+                                           fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
+                                           activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
+                                           activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
+                                           borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left",
+                                           padx=15,
+                                           pady=4)
 own_password_button.grid(row=5, column=1)
 
 own_password_button.focus()
@@ -312,28 +312,29 @@ own_password_button.focus()
 # ---------------------------- Random Password Button ---------------------------- #
 
 random_button = pwbutton.HoverButton(root, text="Generate \nRandom", command=generate_random_password,
-                                width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
-                                fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
-                                activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
-                                activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
-                                borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=10, pady=4)
+                                     width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
+                                     fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
+                                     activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
+                                     activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
+                                     borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=10,
+                                     pady=4)
 random_button.grid(row=5, column=2)
 
 random_button.focus()
 
-
 # ---------------------------- Memorable Password Button ---------------------------- #
 
 memorable_button = pwbutton.HoverButton(root, text="Generate \nMemorable", command=generate_memorable_password,
-                                   width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
-                                   fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
-                                   activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
-                                   activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
-                                   borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=10,
-                                   pady=4)
+                                        width=140, bg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_BG,
+                                        fg=ALL_PASSWORD_GENERATING_BTN_NORMAL_STATE_FG,
+                                        activebackground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_BG,
+                                        activeforeground=ALL_PASSWORD_GENERATING_BTN_ACTIVE_STATE_FG,
+                                        borderless=1, focuscolor='', font=(FONT_NAME, 16, ""), justify="left", padx=10,
+                                        pady=4)
 memorable_button.grid(row=5, column=3)
 
 memorable_button.focus()
+
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 
@@ -355,8 +356,8 @@ def if_exit_checkbox_used():
 is_copy_checkbox_checked = 0  # set default state
 is_copy_checkbox_checked_state = tk.IntVar()
 is_copy = tk.Checkbutton(text="Copy to the Clipboard", variable=is_copy_checkbox_checked_state,
-                              command=is_copy_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
-                              font=(FONT_NAME, 16, ""), pady=20)
+                         command=is_copy_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
+                         font=(FONT_NAME, 16, ""), pady=20)
 is_copy_checkbox_checked_state.get()
 is_copy.grid(row=6, column=2)
 
@@ -365,13 +366,19 @@ is_copy.grid(row=6, column=2)
 is_exit_checkbox_checked = 0
 is_exit_checkbox_checked_state = tk.IntVar()
 is_exit = tk.Checkbutton(text="Exit on Save", variable=is_exit_checkbox_checked_state,
-                              command=if_exit_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
-                              font=(FONT_NAME, 16, ""), pady=20)
+                         command=if_exit_checkbox_used, bg=BACKGROUND, fg=LABEL_FONT_COLOR,
+                         font=(FONT_NAME, 16, ""), pady=20)
 is_exit_checkbox_checked_state.get()
 is_exit.grid(row=6, column=3)
 
 
 # ---------------------------- Save ---------------------------- #
+
+
+def reset_image():
+    change_main_image(START_IMAGE_PATH_STR)
+    root.after_cancel()
+
 
 
 def save():
@@ -449,20 +456,18 @@ def save():
             # Success Status
             inline_warning_message_placeholder_label["text"] = ""
             change_main_image(SUCCESS_IMAGE_PATH_STR)
+            save_button.configure(state="disabled")
 
             # TODO would be better operating asynchronous,
             #  it's just finish for showing again the start screen, doesn't worth 2 sec
-            time.sleep(1.5)
 
             # Reset UI/app
             # save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
-            save_button.configure(state="disabled")
 
             for entry_widget in ENTRY_WIDGETS:
                 entry_widget.copy_placeholder_text_to_textvariable()
 
-            change_main_image(START_IMAGE_PATH_STR)
-
+            root.after(3000, func=reset_image)
 
             # Exit
             if is_exit_checkbox_checked == 1:
@@ -487,13 +492,12 @@ save_button = tkmacosx.Button(root, text="Save", command=save, width=365, bg=SAV
 save_button.bind("<Enter>", on_enter)
 save_button.bind("<Leave>", on_leave)
 
-save_button.grid(row=7, column=2, columnspan=2,)
+save_button.grid(row=7, column=2, columnspan=2, )
 
 # ---------------------------- Placeholder label for validation ---------------------------- #
 
 inline_warning_message_placeholder_label = PwLabel("", 20, 10)
 inline_warning_message_placeholder_label.configure(fg=WARNING_COLOR, justify="left")
 inline_warning_message_placeholder_label.grid(row=8, column=2, columnspan=2)
-
 
 root.mainloop()
