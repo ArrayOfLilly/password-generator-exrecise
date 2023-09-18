@@ -49,6 +49,7 @@ START_IMAGE_PATH_STR = 'img/start.png'
 GENERATING_DATA_IMAGE_PATH_STR = 'img/generating_data.png'
 SUCCESS_IMAGE_PATH_STR = 'img/success.png'
 
+
 # ---------------------------- UI SETUP ------------------------------- #
 
 # ---------------------------- Window ---------------------------- #
@@ -377,8 +378,6 @@ is_exit.grid(row=6, column=3)
 
 def reset_image():
     change_main_image(START_IMAGE_PATH_STR)
-    root.after_cancel()
-
 
 
 def save():
@@ -456,18 +455,17 @@ def save():
             # Success Status
             inline_warning_message_placeholder_label["text"] = ""
             change_main_image(SUCCESS_IMAGE_PATH_STR)
-            save_button.configure(state="disabled")
+            root.after(2000, func=reset_image)
 
             # TODO would be better operating asynchronous,
             #  it's just finish for showing again the start screen, doesn't worth 2 sec
 
-            # Reset UI/app
+            # Reset UI
             # save_button.configure(state="disabled", fg=SAVE_BTN_DISABLED_STATE_FG, bg=SAVE_BTN_DISABLED_STATE_BG)
+            save_button.configure(state="disabled")
 
             for entry_widget in ENTRY_WIDGETS:
                 entry_widget.copy_placeholder_text_to_textvariable()
-
-            root.after(3000, func=reset_image)
 
             # Exit
             if is_exit_checkbox_checked == 1:
